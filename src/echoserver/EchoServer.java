@@ -15,23 +15,14 @@ public class EchoServer {
 				System.out.println("Got a request!");
 				Socket client = sock.accept();
 
-				BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-				
-				PrintWriter writer = new PrintWriter(client.getOutputStream(), true);
+				OutputStream toClient = client.getOutputStream();
+				InputStream fromClient = client.getInputStream();
 
-				String currentLine;
-				
-				boolean stayConnected = true;
-				while((currentLine=reader.readLine()) != null && stayConnected){
-					if(currentLine.compareTo("command:Off") == 0){
-						sock.close();
-						System.exit(0);
-					} else if(currentLine.compareTo("command:Disconnect") == 0){
-						stayConnected = false;
-					} else {
-						writer.println(currentLine);
-					}
+				int currentByte;
+				while((currentByte=fromClient.read()) != -1){
+						toClient.write(currentByte);
 				}
+				toClient.flush();
 				client.close();
 			}
 			

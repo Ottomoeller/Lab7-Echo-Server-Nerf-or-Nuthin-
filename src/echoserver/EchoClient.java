@@ -15,19 +15,17 @@ public class EchoClient {
 			}
 			Socket socket = new Socket(serverIP, 6013);
 			
-			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-			BufferedReader serverReturn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+			OutputStream toServer = socket.getOutputStream();
+			InputStream fromServer = socket.getInputStream();
+			InputStream fromKeyboard = System.in;
 			
-			String currentLine;
-			boolean stillConnected = true;
-			while ((currentLine = reader.readLine()) != null && stillConnected) {
-				writer.println(currentLine);
-				System.out.println(serverReturn.readLine());
-				if((currentLine.compareTo("command:Disconnect") == 0) || (currentLine.compareTo("command:Off") == 0)){
-					System.exit(0);
-				}
+			int currentByte;
+			while ((currentByte = fromKeyboard.read()) != -1) {
+				toServer.write(currentByte);
+				System.out.write(fromServer.read());
 			}
+			System.out.flush();
+			socket.close();
 		} catch (IOException ioe) {
 			System.out.println("We caught an exception");
 			System.err.println(ioe);
