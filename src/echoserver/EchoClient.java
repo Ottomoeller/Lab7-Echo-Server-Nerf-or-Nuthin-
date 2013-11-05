@@ -75,7 +75,7 @@ public class EchoClient implements Runnable{
     private void fromServerThread(){
         try {
             int currentByte;
-            while ((currentByte = fromKeyboard.read()) != -1) {
+            while ((currentByte = fromServer.read()) != -1) {
                 System.out.write(currentByte);
             }
         } catch (IOException ioe) {
